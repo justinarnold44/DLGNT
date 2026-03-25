@@ -342,13 +342,13 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); heig
       AI Copilot
       <span class="ai-badge">Beta</span>
     </div>
-    <div class="user-row">
+    <div class="user-row" onclick="signOut()">
       <div class="user-avatar">JA</div>
       <div>
         <div class="user-name">Justin Arnold</div>
         <div class="user-email">contact@menpens.com</div>
       </div>
-      <span style="margin-left:auto;color:var(--text3);font-size:13px">⋯</span>
+      <span style="margin-left:auto;color:var(--text3);font-size:11px" title="Sign out">⏻</span>
     </div>
   </div>
 </div>
@@ -674,7 +674,27 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); heig
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Auth guard — redirect to login if not signed in
+(async function(){
+  const sb = supabase.createClient('https://suqghqjepnzrbzgnpjtw.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1cWdocWplcG56cmJ6Z25wanR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzOTYwOTcsImV4cCI6MjA4OTk3MjA5N30.HDo4uEJxKz1i1PgORark1qqA4PhWcpt7paKxYI59src');
+  const { data } = await sb.auth.getSession();
+  if (!data.session) { window.location.href = 'login.html'; return; }
+  // Store sb globally for sign out
+  window._sb = sb;
+  window._user = data.session.user;
+  // Update user name in sidebar
+  const meta = data.session.user.user_metadata;
+  if (meta?.name) {
+    const el = document.querySelector('.user-name');
+    if (el) el.textContent = meta.name;
+  }
+  const emailEl = document.querySelector('.user-email');
+  if (emailEl) emailEl.textContent = data.session.user.email;
+})();
+</script>
+
 <script>
 // ── NAVIGATION ──────────────────────────────────────────────
 function nav(name, el) {
@@ -939,6 +959,10 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
+async function signOut() {
+  if (window._sb) await window._sb.auth.signOut();
+  window.location.href = 'login.html';
+}
 function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function copyText(btn) { const text = btn.previousElementSibling.textContent; navigator.clipboard.writeText(text); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy message',2000); }
 </script>

@@ -4,45 +4,63 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome to DLGNT.ai!</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0f0d;--bg2:#111a15;--surface:#1a2b21;--border:rgba(52,211,153,0.12);--border2:rgba(52,211,153,0.25);--green:#34d399;--green2:#10b981;--green3:#059669;--text:#e8f5ef;--text2:#8faa9a;--font:'DM Sans',sans-serif;}
+:root{--bg:#0a0f0d;--bg2:#111a15;--surface:#1a2b21;--border:rgba(52,211,153,0.12);--border2:rgba(52,211,153,0.25);--green:#34d399;--green2:#10b981;--green3:#059669;--text:#e8f5ef;--text2:#8faa9a;--text3:#4d6b58;--font:'DM Sans',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:50px 40px;width:480px;max-width:95vw;text-align:center;}
-.icon{width:64px;height:64px;border-radius:50%;background:rgba(16,185,129,0.15);border:2px solid var(--green3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;}
-h1{font-size:26px;font-weight:600;letter-spacing:-0.5px;margin-bottom:10px;}
-.sub{font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:32px;}
-.steps{text-align:left;margin-bottom:32px;}
-.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:44px 28px;width:100%;max-width:440px;text-align:center;}
+.icon{width:60px;height:60px;border-radius:50%;background:rgba(16,185,129,0.15);border:2px solid var(--green3);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:26px;}
+h1{font-size:24px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px;}
+.sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:28px;}
+.set-pw{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:24px;text-align:left;}
+.set-pw-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.set-pw-desc{font-size:13px;color:var(--text2);line-height:1.55;}
+.email-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:rgba(52,211,153,0.1);border:1px solid var(--border2);font-size:12px;color:var(--green);font-weight:500;margin:8px 0;}
+.steps{text-align:left;margin-bottom:24px;}
+.step{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
 .step:last-child{border-bottom:none;}
-.step-num{width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--green);flex-shrink:0;margin-top:1px;}
-.step-title{font-size:14px;font-weight:500;margin-bottom:3px;}
-.step-desc{font-size:12px;color:var(--text2);}
-.btn{display:block;width:100%;padding:14px;border-radius:10px;background:var(--green3);color:#fff;border:none;font-size:15px;font-weight:500;cursor:pointer;font-family:var(--font);transition:background 0.15s;text-decoration:none;text-align:center;}
+.sn{width:26px;height:26px;border-radius:50%;background:rgba(52,211,153,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--green);flex-shrink:0;}
+.st{font-size:13px;font-weight:500;margin-bottom:2px;}
+.sd{font-size:12px;color:var(--text2);}
+.btn{display:block;width:100%;padding:13px;border-radius:9px;background:var(--green3);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);transition:background 0.15s;text-decoration:none;text-align:center;}
 .btn:hover{background:var(--green2);}
 </style>
 </head>
 <body>
 <div class="card">
   <div class="icon">✓</div>
-  <h1>You're all set!</h1>
-  <p class="sub">Welcome to DLGNT.ai. Your 14-day free trial has started. Here's how to get your first affiliates in the next hour:</p>
+  <h1>Payment successful!</h1>
+  <p class="sub">Welcome to DLGNT.ai. Your 14-day free trial has started.</p>
+
+  <div class="set-pw">
+    <div class="set-pw-title">📧 Check your email</div>
+    <div class="set-pw-desc">We sent a confirmation to <span id="user-email" style="color:var(--green);font-weight:500">your email</span>. Click the link to set your password and activate your account.</div>
+  </div>
+
   <div class="steps">
     <div class="step">
-      <div class="step-num">1</div>
-      <div><div class="step-title">Connect your TikTok Shop</div><div class="step-desc">Link your shop so we can track sales and commissions automatically.</div></div>
+      <div class="sn">1</div>
+      <div><div class="st">Set your password</div><div class="sd">Click the link in your email to create your login.</div></div>
     </div>
     <div class="step">
-      <div class="step-num">2</div>
-      <div><div class="step-title">Run your first creator search</div><div class="step-desc">Tell AI your niche and budget — it'll find your best-fit affiliates in seconds.</div></div>
+      <div class="sn">2</div>
+      <div><div class="st">Connect your TikTok Shop</div><div class="sd">Link your shop to start tracking sales and commissions.</div></div>
     </div>
     <div class="step">
-      <div class="step-num">3</div>
-      <div><div class="step-title">Launch outreach automation</div><div class="step-desc">AI writes and sends personalized DMs. Sit back and watch replies come in.</div></div>
+      <div class="sn">3</div>
+      <div><div class="st">Run your first creator search</div><div class="sd">AI finds your best-fit affiliates in seconds.</div></div>
     </div>
   </div>
-  <a href="dashboard.html" class="btn">Go to dashboard →</a>
+
+  <a href="login.html" class="btn">Go to login →</a>
 </div>
+
+<script>
+// Show the email they signed up with if passed via URL
+const params = new URLSearchParams(window.location.search);
+const email = params.get('email');
+if (email) document.getElementById('user-email').textContent = email;
+</script>
 </body>
 </html>

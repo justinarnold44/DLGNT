@@ -242,47 +242,56 @@ footer { padding: 40px; border-top: 1px solid var(--border); display: flex; just
   <p class="section-sub" style="margin:0 auto">Start free. Scale as you grow. Cancel anytime.</p>
   <div class="pricing-grid">
     <div class="price-card">
-      <div class="price-plan">Starter</div>
-      <div><span class="price-amount">$99</span><span class="price-period">/mo</span></div>
-      <div class="price-desc">Perfect for brands just getting started with TikTok affiliates.</div>
+      <div class="price-plan">Basic</div>
+      <div><span class="price-amount">$495</span><span class="price-period">/mo</span></div>
+      <div class="price-desc">Perfect for brands getting started with TikTok Shop affiliates.</div>
       <ul class="price-features">
-        <li>Up to 10 active affiliates</li>
-        <li>AI creator search</li>
-        <li>500 DMs / month</li>
-        <li>Basic analytics</li>
-        <li>Email support</li>
+        <li>1000 Daily Creator Outreach</li>
+        <li>Unlimited CRM Outreach</li>
+        <li>Unlimited Email Outreach</li>
+        <li>Unlimited Followup Messages</li>
+        <li>3 concurrent automations</li>
+        <li>Access to database of 3M+ affiliates</li>
+        <li>Avoids Duplicate Messages</li>
+        <li>Analytics Dashboard</li>
       </ul>
-      <button class="price-btn" onclick="openCheckout('Starter', 99)">Get started</button>
+      <button class="price-btn" onclick="openCheckout('Basic', 495)">Get started</button>
     </div>
     <div class="price-card featured">
       <div class="featured-badge">Most popular</div>
       <div class="price-plan">Growth</div>
-      <div><span class="price-amount">$299</span><span class="price-period">/mo</span></div>
-      <div class="price-desc">For growing brands ready to scale their affiliate program.</div>
+      <div><span class="price-amount">$950</span><span class="price-period">/mo</span></div>
+      <div class="price-desc">For growing brands ready to scale their affiliate program fast.</div>
       <ul class="price-features">
-        <li>Up to 100 active affiliates</li>
-        <li>AI creator search + scoring</li>
-        <li>5,000 DMs / month</li>
-        <li>Full automation suite</li>
-        <li>Content brief generator</li>
-        <li>Advanced analytics</li>
-        <li>Priority support</li>
+        <li>Everything in Basic</li>
+        <li>4,000 Daily Creator Outreach</li>
+        <li>AI Creator Search</li>
+        <li>Creator Briefs</li>
+        <li>Creator Community (up to 20 creators)</li>
+        <li>7 concurrent automations</li>
+        <li>AI Sample Request Approval</li>
+        <li>Auto-delete old target collaborations</li>
+        <li>Social Intelligence (limited)</li>
+        <li>Email, phone & spark code retrieval</li>
       </ul>
-      <button class="price-btn featured-btn" onclick="openCheckout('Growth', 299)">Get started</button>
+      <button class="price-btn featured-btn" onclick="openCheckout('Growth', 950)">Get started</button>
     </div>
     <div class="price-card">
       <div class="price-plan">Scale</div>
-      <div><span class="price-amount">$599</span><span class="price-period">/mo</span></div>
-      <div class="price-desc">For established brands with high-volume affiliate programs.</div>
+      <div><span class="price-amount">$2,950</span><span class="price-period">/mo</span></div>
+      <div class="price-desc">For established brands that want unlimited scale and hands-on support.</div>
       <ul class="price-features">
-        <li>Unlimited affiliates</li>
-        <li>Unlimited DMs</li>
-        <li>White-label option</li>
-        <li>Custom integrations</li>
-        <li>Dedicated account manager</li>
-        <li>SLA guarantee</li>
+        <li>Everything in Growth</li>
+        <li>7,500+ Daily Creator Outreach</li>
+        <li>AI Auto Replies</li>
+        <li>Unlimited concurrent automations</li>
+        <li>Social Intelligence Save List</li>
+        <li>Creator Community — unlimited creators</li>
+        <li>Early access to new features</li>
+        <li>Priority Support</li>
+        <li>Full-time community coach & incentivization</li>
       </ul>
-      <button class="price-btn" onclick="openCheckout('Scale', 599)">Get started</button>
+      <button class="price-btn" onclick="openCheckout('Scale', 2950)">Get started</button>
     </div>
   </div>
 </div>
@@ -313,7 +322,7 @@ footer { padding: 40px; border-top: 1px solid var(--border); display: flex; just
     <p class="modal-sub">14 days free, then billed monthly. Cancel anytime.</p>
     <div class="modal-plan">
       <div><div class="modal-plan-name" id="modal-plan-name">Growth Plan</div><div style="font-size:11px;color:var(--text3)">Monthly subscription</div></div>
-      <div class="modal-plan-price" id="modal-plan-price">$299/mo</div>
+      <div class="modal-plan-price" id="modal-plan-price">$950/mo</div>
     </div>
     <div class="form-group">
       <label class="form-label">Full name</label>
@@ -333,7 +342,7 @@ footer { padding: 40px; border-top: 1px solid var(--border); display: flex; just
 </div>
 
 <script>
-let selectedPlan = 'Growth', selectedPrice = 299;
+let selectedPlan = 'Growth', selectedPrice = 950;
 
 function openCheckout(plan, price) {
   selectedPlan = plan; selectedPrice = price;

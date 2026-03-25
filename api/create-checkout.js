@@ -6,9 +6,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // Map plan names to your Stripe Price IDs
 // Create these in your Stripe dashboard under Products > Prices
 const PRICE_IDS = {
-  Starter: process.env.STRIPE_PRICE_STARTER,   // e.g. price_1ABC...
-  Growth:  process.env.STRIPE_PRICE_GROWTH,    // e.g. price_1DEF...
-  Scale:   process.env.STRIPE_PRICE_SCALE,     // e.g. price_1GHI...
+  Basic:  process.env.STRIPE_PRICE_BASIC,    // $495/mo
+  Growth: process.env.STRIPE_PRICE_GROWTH,   // $950/mo
+  Scale:  process.env.STRIPE_PRICE_SCALE,    // $2950/mo
 };
 
 module.exports = async (req, res) => {

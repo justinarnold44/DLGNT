@@ -678,7 +678,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); heig
 <script>
 // Auth guard — redirect to login if not signed in
 (async function(){
-  const sb = supabase.createClient('https://suqghqjepnzrbzgnpjtw.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1cWdocWplcG56cmJ6Z25wanR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzOTYwOTcsImV4cCI6MjA4OTk3MjA5N30.HDo4uEJxKz1i1PgORark1qqA4PhWcpt7paKxYI59src');
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  const sb = supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
   const { data } = await sb.auth.getSession();
   if (!data.session) { window.location.href = 'login.html'; return; }
   // Store sb globally for sign out

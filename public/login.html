@@ -64,11 +64,13 @@ h2{font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:5px;text-a
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SURL = 'https://suqghqjepnzrbzgnpjtw.supabase.co';
-const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1cWdocWplcG56cmJ6Z25wanR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzOTYwOTcsImV4cCI6MjA4OTk3MjA5N30.HDo4uEJxKz1i1PgORark1qqA4PhWcpt7paKxYI59src';
-const sb = supabase.createClient(SURL, SKEY);
-
-sb.auth.getSession().then(({data})=>{ if(data.session) window.location.href='dashboard.html'; });
+let sb;
+(async()=>{
+  const cfg = await fetch('/api/config').then(r=>r.json());
+  sb = supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+  const {data} = await sb.auth.getSession();
+  if(data.session) window.location.href='dashboard.html';
+})();
 
 function err(m){const e=document.getElementById('err');e.textContent=m;e.classList.add('show');document.getElementById('ok').classList.remove('show');}
 function ok(m){const e=document.getElementById('ok');e.textContent=m;e.classList.add('show');document.getElementById('err').classList.remove('show');}

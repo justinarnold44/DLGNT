@@ -1,75 +1,35 @@
-# AffiliateAI — Deploy Guide
+# DLGNT.ai — Deploy Guide
 
-## What's included
-- `public/index.html`    — Landing page + pricing
-- `public/login.html`    — Login page
-- `public/success.html`  — Post-payment success page
-- `public/dashboard.html` — Main app (copy your dashboard file here)
-- `api/create-checkout.js` — Stripe Checkout backend
-- `api/ai.js`            — Anthropic AI proxy (keeps key secure)
+## Environment Variables (add in Vercel Settings)
 
----
+| Key | Where to get it |
+|-----|----------------|
+| `ANTHROPIC_API_KEY` | console.anthropic.com |
+| `STRIPE_SECRET_KEY` | dashboard.stripe.com → Developers → API Keys |
+| `STRIPE_PRICE_STARTER` | Stripe → Products → Starter plan Price ID |
+| `STRIPE_PRICE_GROWTH` | Stripe → Products → Growth plan Price ID |
+| `STRIPE_PRICE_SCALE` | Stripe → Products → Scale plan Price ID |
+| `RAPIDAPI_KEY` | rapidapi.com → Subscribe to "TikTok Scraper" (free tier available) |
+| `NEXT_PUBLIC_BASE_URL` | Your Vercel URL e.g. https://dlgnt.vercel.app |
 
-## Deploy in 15 minutes
+## Get RapidAPI Key (for real creator data)
+1. Go to rapidapi.com → Sign up free
+2. Search "TikTok Scraper7" → Subscribe (100 free calls/month)
+3. Copy your API key → paste into Vercel env vars
 
-### Step 1 — Push to GitHub
-1. Create a new repo at github.com
-2. Upload all these files to it
+## Deploy Steps
+1. Upload this folder to GitHub
+2. Import to Vercel → Deploy
+3. Add environment variables above
+4. Create 3 Stripe products (Starter $99, Growth $299, Scale $599) → monthly recurring
+5. Copy Price IDs into Vercel env vars
+6. Test with Stripe card: 4242 4242 4242 4242
 
-### Step 2 — Deploy to Vercel (free)
-1. Go to vercel.com → New Project
-2. Import your GitHub repo
-3. Click Deploy
-
-### Step 3 — Add environment variables in Vercel
-Go to your project → Settings → Environment Variables and add:
-
-| Key | Value |
-|-----|-------|
-| `ANTHROPIC_API_KEY` | Your key from console.anthropic.com |
-| `STRIPE_SECRET_KEY` | Your Stripe secret key (sk_live_...) |
-| `STRIPE_PRICE_STARTER` | Stripe Price ID for $99/mo plan |
-| `STRIPE_PRICE_GROWTH` | Stripe Price ID for $299/mo plan |
-| `STRIPE_PRICE_SCALE` | Stripe Price ID for $599/mo plan |
-| `NEXT_PUBLIC_BASE_URL` | Your live URL e.g. https://affiliateai.vercel.app |
-
-### Step 4 — Create Stripe products
-1. Go to stripe.com → Products → Add product
-2. Create 3 products: Starter ($99/mo), Growth ($299/mo), Scale ($599/mo)
-3. Set billing as "Recurring" → Monthly
-4. Copy each Price ID (starts with price_) into your Vercel env vars
-
-### Step 5 — Copy dashboard
-Copy your `affiliate-platform.html` file into `public/` and rename it `dashboard.html`
-
-Update the AI calls in dashboard.html to use your proxy:
-```js
-// Change this:
-const res = await fetch('https://api.anthropic.com/v1/messages', { ... })
-
-// To this:
-const res = await fetch('/api/ai', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], system: systemPrompt })
-});
-```
-
-### Step 6 — Add custom domain (optional but recommended)
-In Vercel → Settings → Domains → add your domain
-Buy a domain at namecheap.com (~$12/yr) if needed
-
----
-
-## Test it
-1. Visit your Vercel URL
-2. Click "Get started" on any plan
-3. Use Stripe test card: 4242 4242 4242 4242, any future date, any CVC
-4. Should redirect to success.html then dashboard
-
----
-
-## Go live
-- Switch Stripe from Test mode to Live mode
-- Update STRIPE_SECRET_KEY to your live key (sk_live_...)
-- You're live and taking payments!
+## Files
+- public/index.html — Landing + pricing page
+- public/login.html — Login
+- public/dashboard.html — Main app (matches Cruva layout)
+- public/success.html — Post-payment
+- api/create-checkout.js — Stripe subscription
+- api/ai.js — Anthropic proxy
+- api/creator-search.js — TikTok creator data via RapidAPI

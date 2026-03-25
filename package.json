@@ -1,7 +1,7 @@
 {
-  "name": "affiliateai",
+  "name": "dlgnt-ai",
   "version": "1.0.0",
-  "description": "TikTok Shop Affiliate Platform",
+  "description": "DLGNT.ai — TikTok Shop Affiliate Engine",
   "dependencies": {
     "stripe": "^14.0.0"
   }

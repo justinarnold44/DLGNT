@@ -1,0 +1,8 @@
+{
+  "name": "affiliateai",
+  "version": "1.0.0",
+  "description": "TikTok Shop Affiliate Platform",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}

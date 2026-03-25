@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AffiliateAI — TikTok Shop Affiliate Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0f0d;
+  --bg2: #111a15;
+  --bg3: #162019;
+  --surface: #1a2b21;
+  --surface2: #1f3327;
+  --border: rgba(52, 211, 153, 0.12);
+  --border2: rgba(52, 211, 153, 0.22);
+  --green: #34d399;
+  --green2: #10b981;
+  --green3: #059669;
+  --green-dim: rgba(52, 211, 153, 0.15);
+  --text: #e8f5ef;
+  --text2: #8faa9a;
+  --text3: #4d6b58;
+  --red: #f87171;
+  --amber: #fbbf24;
+  --blue: #60a5fa;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+/* LAYOUT */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 230px; min-width: 230px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.logo-wrap {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-mark {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--green2), var(--green3));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 600; color: #fff;
+  flex-shrink: 0;
+}
+.logo-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.logo-badge { font-size: 9px; font-weight: 500; background: var(--green-dim); color: var(--green); padding: 2px 6px; border-radius: 20px; border: 1px solid var(--border2); margin-left: auto; }
+
+.nav { padding: 12px 10px; flex: 1; overflow-y: auto; }
+.nav-section { margin-bottom: 8px; }
+.nav-label { font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 8px 4px; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; color: var(--text2);
+  cursor: pointer; transition: all 0.15s;
+  user-select: none;
+}
+.nav-item:hover { background: var(--surface); color: var(--text); }
+.nav-item.active { background: var(--green-dim); color: var(--green); }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.8; }
+.nav-badge { margin-left: auto; font-size: 10px; background: var(--green3); color: #fff; padding: 1px 6px; border-radius: 20px; font-weight: 500; }
+
+.sidebar-bottom {
+  padding: 14px 10px;
+  border-top: 1px solid var(--border);
+}
+.user-row { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.user-row:hover { background: var(--surface); }
+.user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--green3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; }
+.user-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.user-plan { font-size: 11px; color: var(--text2); }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.page-title { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.btn {
+  padding: 7px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; border: 1px solid var(--border2);
+  background: var(--surface); color: var(--text2);
+  font-family: var(--font); transition: all 0.15s;
+}
+.btn:hover { border-color: var(--green); color: var(--green); }
+.btn-green {
+  background: var(--green3); color: #fff; border-color: var(--green3);
+}
+.btn-green:hover { background: var(--green2); border-color: var(--green2); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* PAGES */
+.page { display: none; animation: fadeIn 0.2s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* METRIC CARDS */
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+.metric {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  position: relative; overflow: hidden;
+}
+.metric::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--green3), transparent);
+}
+.metric-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; margin-bottom: 8px; }
+.metric-value { font-size: 26px; font-weight: 600; color: var(--text); letter-spacing: -0.5px; line-height: 1; margin-bottom: 6px; }
+.metric-change { font-size: 12px; color: var(--green); }
+.metric-change.down { color: var(--red); }
+
+/* PANEL */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.panel-body { padding: 18px; }
+
+/* TABLE */
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+.table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+.table tr:last-child td { border-bottom: none; }
+.table tbody tr { transition: background 0.1s; }
+.table tbody tr:hover td { background: var(--surface); }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+.badge-amber { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.badge-blue { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+.badge-red { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+
+/* AVATAR */
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; flex-shrink: 0;
+}
+
+/* AI CHAT */
+.ai-panel {
+  position: fixed; right: 24px; bottom: 24px;
+  width: 360px; max-height: 520px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  z-index: 100;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ai-panel.collapsed { max-height: 52px; overflow: hidden; }
+.ai-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; flex-shrink: 0;
+}
+.ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.ai-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.ai-sub { font-size: 11px; color: var(--text2); margin-left: auto; }
+.ai-messages { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.ai-msg { max-width: 85%; padding: 9px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+.ai-msg.user { background: var(--green3); color: #fff; margin-left: auto; border-bottom-right-radius: 3px; }
+.ai-msg.bot { background: var(--surface); color: var(--text); border-bottom-left-radius: 3px; }
+.ai-msg.loading { color: var(--text2); font-style: italic; }
+.ai-input-row { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
+.ai-input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 13px; color: var(--text); font-family: var(--font);
+  outline: none; transition: border 0.15s;
+}
+.ai-input:focus { border-color: var(--green); }
+.ai-send { width: 34px; height: 34px; border-radius: 8px; background: var(--green3); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+.ai-send:hover { background: var(--green2); }
+
+/* CHART BARS */
+.chart-wrap { display: flex; align-items: flex-end; gap: 4px; height: 80px; padding: 0 2px; }
+.bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--surface2); transition: all 0.3s; }
+.bar:hover { background: var(--green3); }
+.bar.hi { background: var(--green3); }
+
+/* SEARCH INPUT */
+.search-wrap { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 14px;
+  font-size: 13px; color: var(--text); font-family: var(--font);
+  outline: none; transition: border 0.15s;
+}
+.search-input:focus { border-color: var(--green); }
+
+/* CREATOR CARD */
+.creator-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.creator-row:last-child { border-bottom: none; }
+
+/* SCORE BAR */
+.score-wrap { display: flex; align-items: center; gap: 8px; }
+.score-track { width: 80px; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; background: var(--green3); }
+.score-num { font-size: 12px; font-weight: 600; color: var(--green); font-family: var(--mono); min-width: 26px; }
+
+/* PROGRESS BAR */
+.progress-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-top: 5px; }
+.progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green3), var(--green2)); }
+
+/* AUTOMATION CARD */
+.auto-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.15s;
+}
+.auto-card:hover { border-color: var(--border2); }
+.auto-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+
+/* TAG PILLS */
+.pill { display: inline-flex; align-items: center; padding: 4px 11px; border-radius: 20px; font-size: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); cursor: pointer; transition: all 0.15s; margin-right: 6px; margin-bottom: 6px; }
+.pill:hover, .pill.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+
+/* TOGGLE */
+.toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.toggle { width: 36px; height: 20px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; position: relative; transition: background 0.2s; }
+.toggle.on { background: var(--green3); border-color: var(--green3); }
+.toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+.toggle.on::after { transform: translateX(16px); }
+
+/* ONBOARDING CHIP */
+.onboard-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 12px; background: rgba(52,211,153,0.08); border: 1px solid var(--border2); color: var(--green); margin-bottom: 20px; }
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 40px; color: var(--text3); font-size: 13px; }
+
+/* STAT SPARKLINE */
+.spark { display: flex; align-items: flex-end; gap: 2px; height: 28px; }
+.spark-bar { width: 4px; border-radius: 2px; background: var(--green3); opacity: 0.5; }
+.spark-bar:last-child { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo-wrap">
+      <div class="logo-mark">A</div>
+      <div class="logo-name">AffiliateAI</div>
+      <div class="logo-badge">BETA</div>
+    </div>
+    <div class="nav">
+      <div class="nav-section">
+        <div class="nav-item active" onclick="nav('dashboard',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+          Dashboard
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Discovery</div>
+        <div class="nav-item" onclick="nav('creators',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="6" r="3"/><path d="M2 13c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+          AI Creator Search
+          <span class="nav-badge">AI</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Outreach</div>
+        <div class="nav-item" onclick="nav('automations',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4h4l-3.3 2.4 1.3 4L8 9 4 11.4l1.3-4L2 5h4z"/></svg>
+          Automations
+        </div>
+        <div class="nav-item" onclick="nav('campaigns',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6h14"/></svg>
+          Campaigns
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Management</div>
+        <div class="nav-item" onclick="nav('crm',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="6" r="2.5"/><circle cx="11" cy="6" r="2.5"/><path d="M1 13c0-2.2 1.8-4 4-4s4 1.8 4 4"/><path d="M8.5 12.5c.5-1.5 2-2.5 3.5-2.5 1.9 0 3.5 1.6 3.5 3.5"/></svg>
+          Affiliate CRM
+        </div>
+        <div class="nav-item" onclick="nav('analytics',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 13L5 7l3 3 3-5 3 4"/></svg>
+          Analytics
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Content</div>
+        <div class="nav-item" onclick="nav('briefs',this)">
+          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="1" width="12" height="14" rx="2"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
+          Content Briefs
+          <span class="nav-badge">AI</span>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-avatar">JA</div>
+        <div>
+          <div class="user-name">Justin Arnold</div>
+          <div class="user-plan">Pro plan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="page-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-sm" onclick="openAI('Help me analyze my affiliate performance and suggest improvements')">Ask AI ✦</button>
+        <button class="btn btn-green btn-sm" onclick="nav('creators', document.querySelector('.nav-item:nth-child(2)'))">+ Find Creators</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="onboard-chip">✦ AI is actively monitoring your campaigns</div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Affiliate GMV</div>
+            <div class="metric-value">$284,421</div>
+            <div class="metric-change">↑ +139% this month</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">DMs Sent</div>
+            <div class="metric-value">1,247</div>
+            <div class="metric-change">↑ +407% this month</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Video Views</div>
+            <div class="metric-value">4.2M</div>
+            <div class="metric-change">↑ +381% this month</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Active Affiliates</div>
+            <div class="metric-value">86</div>
+            <div class="metric-change down">↓ -3 this week</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">GMV trend</div>
+              <div style="font-size:11px;color:var(--text3)">Last 14 days</div>
+            </div>
+            <div class="panel-body">
+              <div class="chart-wrap">
+                <div class="bar" style="height:28%"></div>
+                <div class="bar" style="height:35%"></div>
+                <div class="bar" style="height:42%"></div>
+                <div class="bar" style="height:38%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:50%"></div>
+                <div class="bar" style="height:63%"></div>
+                <div class="bar" style="height:58%"></div>
+                <div class="bar" style="height:70%"></div>
+                <div class="bar" style="height:75%"></div>
+                <div class="bar" style="height:68%"></div>
+                <div class="bar" style="height:82%"></div>
+                <div class="bar" style="height:88%"></div>
+                <div class="bar hi" style="height:100%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text3)">
+                <span>Mar 10</span><span>Mar 24</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Live activity</div></div>
+            <div class="panel-body" style="padding:10px 18px">
+              <div id="activity-feed"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Top performing affiliates</div>
+            <button class="btn btn-sm" onclick="nav('crm', document.querySelectorAll('.nav-item')[5])">View all →</button>
+          </div>
+          <table class="table">
+            <thead><tr>
+              <th>Creator</th><th>Niche</th><th>Followers</th>
+              <th>GMV</th><th>Videos</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(16,185,129,0.2);color:var(--green)">SN</div><div><div style="font-weight:500">@stylewithnadia</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e48a85808d85a487968185908b96ca8d8b">[email&#160;protected]</a></div></div></div></td>
+                <td style="color:var(--text2)">Fashion</td><td style="color:var(--text2)">1.2M</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$42,100</td>
+                <td style="color:var(--text2)">18</td>
+                <td><span class="badge badge-green">Active</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(96,165,250,0.2);color:var(--blue)">BL</div><div><div style="font-weight:500">@beautybylaura</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9d5d8cccbd8f9dbdcd8cccdc097dad6d4">[email&#160;protected]</a></div></div></div></td>
+                <td style="color:var(--text2)">Beauty</td><td style="color:var(--text2)">890K</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$38,500</td>
+                <td style="color:var(--text2)">14</td>
+                <td><span class="badge badge-green">Active</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(251,191,36,0.2);color:var(--amber)">FJ</div><div><div style="font-weight:500">@fitnessjordan</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6f05001d0b0e012f09061b410c00">[email&#160;protected]</a></div></div></div></td>
+                <td style="color:var(--text2)">Health</td><td style="color:var(--text2)">540K</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$21,200</td>
+                <td style="color:var(--text2)">9</td>
+                <td><span class="badge badge-amber">Pending</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(248,113,113,0.15);color:var(--red)">GS</div><div><div style="font-weight:500">@glowwithsara</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c2b1a3b0a382a5aeadb5eca1adaf">[email&#160;protected]</a></div></div></div></td>
+                <td style="color:var(--text2)">Skincare</td><td style="color:var(--text2)">210K</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$14,800</td>
+                <td style="color:var(--text2)">6</td>
+                <td><span class="badge badge-blue">New</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AI CREATOR SEARCH -->
+      <div class="page" id="page-creators">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">AI creator search ✦</div>
+            <div style="font-size:11px;color:var(--text3)">Powered by Claude AI</div>
+          </div>
+          <div class="panel-body">
+            <div class="search-wrap">
+              <input class="search-input" id="creator-query" placeholder="e.g. beauty creators 100k-500k followers, high engagement rate, skincare niche..." value="beauty creators 100k-500k followers high engagement">
+              <button class="btn btn-green" onclick="aiCreatorSearch()">Search with AI ✦</button>
+            </div>
+            <div style="margin-bottom:16px">
+              <span class="pill active" onclick="setPill(this,'beauty creators 100k-500k followers')">Beauty</span>
+              <span class="pill" onclick="setPill(this,'fashion lifestyle creators 200k-1M followers')">Fashion</span>
+              <span class="pill" onclick="setPill(this,'fitness health creators high engagement')">Fitness</span>
+              <span class="pill" onclick="setPill(this,'food cooking creators viral content')">Food</span>
+              <span class="pill" onclick="setPill(this,'tech gadget review creators')">Tech</span>
+            </div>
+            <div id="creator-results">
+              <div class="creator-row">
+                <div class="avatar" style="background:rgba(16,185,129,0.2);color:var(--green)">MK</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13px">@makeupbymia</div>
+                  <div style="font-size:11px;color:var(--text2)">320K followers · 8.4% eng · Beauty · Chicago</div>
+                </div>
+                <div class="score-wrap" style="margin-right:14px">
+                  <div style="font-size:11px;color:var(--text3)">Match</div>
+                  <div class="score-track"><div class="score-fill" style="width:92%"></div></div>
+                  <div class="score-num">92</div>
+                </div>
+                <button class="btn btn-green btn-sm" onclick="sendOutreach('@makeupbymia')">Outreach</button>
+              </div>
+              <div class="creator-row">
+                <div class="avatar" style="background:rgba(96,165,250,0.2);color:var(--blue)">GS</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13px">@glowwithsara</div>
+                  <div style="font-size:11px;color:var(--text2)">210K followers · 11.2% eng · Skincare · LA</div>
+                </div>
+                <div class="score-wrap" style="margin-right:14px">
+                  <div style="font-size:11px;color:var(--text3)">Match</div>
+                  <div class="score-track"><div class="score-fill" style="width:87%"></div></div>
+                  <div class="score-num">87</div>
+                </div>
+                <button class="btn btn-green btn-sm" onclick="sendOutreach('@glowwithsara')">Outreach</button>
+              </div>
+              <div class="creator-row">
+                <div class="avatar" style="background:rgba(251,191,36,0.15);color:var(--amber)">BQ</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13px">@beautyqueenash</div>
+                  <div style="font-size:11px;color:var(--text2)">480K followers · 6.1% eng · Beauty · NYC</div>
+                </div>
+                <div class="score-wrap" style="margin-right:14px">
+                  <div style="font-size:11px;color:var(--text3)">Match</div>
+                  <div class="score-track"><div class="score-fill" style="width:79%"></div></div>
+                  <div class="score-num">79</div>
+                </div>
+                <button class="btn btn-green btn-sm" onclick="sendOutreach('@beautyqueenash')">Outreach</button>
+              </div>
+              <div class="creator-row">
+                <div class="avatar" style="background:rgba(248,113,113,0.15);color:var(--red)">LR</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:500;font-size:13px">@liproutes</div>
+                  <div style="font-size:11px;color:var(--text2)">145K followers · 14.3% eng · Lip Art · Miami</div>
+                </div>
+                <div class="score-wrap" style="margin-right:14px">
+                  <div style="font-size:11px;color:var(--text3)">Match</div>
+                  <div class="score-track"><div class="score-fill" style="width:74%"></div></div>
+                  <div class="score-num">74</div>
+                </div>
+                <button class="btn btn-green btn-sm" onclick="sendOutreach('@liproutes')">Outreach</button>
+              </div>
+            </div>
+            <div id="creator-ai-response" style="margin-top:14px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTOMATIONS -->
+      <div class="page" id="page-automations">
+        <div class="grid-2" style="margin-bottom:16px">
+          <div>
+            <div class="panel" style="margin-bottom:16px">
+              <div class="panel-header">
+                <div class="panel-title">Active automations</div>
+                <button class="btn btn-green btn-sm" onclick="createAutomation()">+ New ✦</button>
+              </div>
+              <div class="panel-body">
+                <div class="auto-card">
+                  <div class="auto-icon" style="background:rgba(16,185,129,0.15)">🤖</div>
+                  <div style="flex:1">
+                    <div style="font-weight:500;font-size:13px;margin-bottom:3px">Initial DM sequence</div>
+                    <div style="font-size:11px;color:var(--text2)">847 sent · 24% reply rate · 3 steps</div>
+                  </div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="auto-card">
+                  <div class="auto-icon" style="background:rgba(96,165,250,0.12)">↩</div>
+                  <div style="flex:1">
+                    <div style="font-weight:500;font-size:13px;margin-bottom:3px">Auto-reply handler</div>
+                    <div style="font-size:11px;color:var(--text2)">312 replies · AI responds in &lt;2min</div>
+                  </div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="auto-card">
+                  <div class="auto-icon" style="background:rgba(251,191,36,0.1)">✉</div>
+                  <div style="flex:1">
+                    <div style="font-weight:500;font-size:13px;margin-bottom:3px">Email follow-up</div>
+                    <div style="font-size:11px;color:var(--text2)">After 48h no reply · 201 sent</div>
+                  </div>
+                  <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="auto-card">
+                  <div class="auto-icon" style="background:rgba(248,113,113,0.1)">🎁</div>
+                  <div style="flex:1">
+                    <div style="font-weight:500;font-size:13px;margin-bottom:3px">Sample request flow</div>
+                    <div style="font-size:11px;color:var(--text2)">Auto-approves under 50 followers · 44 sent</div>
+                  </div>
+                  <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">AI message composer ✦</div>
+            </div>
+            <div class="panel-body">
+              <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Describe your brand and AI will write the perfect outreach DM</div>
+              <textarea id="compose-prompt" class="search-input" style="width:100%;height:90px;resize:none;display:block;margin-bottom:10px" placeholder="e.g. Skincare brand, natural ingredients, targeting beauty creators 100k-500k, offering 15% commission + free products..."></textarea>
+              <button class="btn btn-green" style="width:100%;justify-content:center;display:flex" onclick="composeMessage()">Generate outreach message ✦</button>
+              <div id="composed-message" style="margin-top:14px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAMPAIGNS -->
+      <div class="page" id="page-campaigns">
+        <div class="grid-3" style="margin-bottom:20px">
+          <div class="metric">
+            <div class="metric-label">Active campaigns</div>
+            <div class="metric-value">4</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Total reach</div>
+            <div class="metric-value">8.4M</div>
+            <div class="metric-change">↑ +22% vs last month</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Avg ROAS</div>
+            <div class="metric-value">4.2x</div>
+            <div class="metric-change">↑ +0.8x improvement</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">All campaigns</div>
+            <button class="btn btn-green btn-sm" onclick="createCampaign()">+ New campaign ✦</button>
+          </div>
+          <table class="table">
+            <thead><tr>
+              <th>Campaign</th><th>Affiliates</th><th>GMV</th><th>Goal</th><th>Progress</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="font-weight:500">Summer Skincare Launch</div><div style="font-size:11px;color:var(--text3)">Mar 1 – Mar 31</div></td>
+                <td style="color:var(--text2)">24</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$94,200</td>
+                <td style="color:var(--text2)">$120K</td>
+                <td><div style="font-size:11px;color:var(--text3);margin-bottom:4px">78%</div><div class="progress-track" style="width:140px"><div class="progress-fill" style="width:78%"></div></div></td>
+                <td><span class="badge badge-green">Active</span></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Spring Fashion Drop</div><div style="font-size:11px;color:var(--text3)">Mar 10 – Apr 10</div></td>
+                <td style="color:var(--text2)">18</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$61,800</td>
+                <td style="color:var(--text2)">$80K</td>
+                <td><div style="font-size:11px;color:var(--text3);margin-bottom:4px">77%</div><div class="progress-track" style="width:140px"><div class="progress-fill" style="width:77%"></div></div></td>
+                <td><span class="badge badge-green">Active</span></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Fitness Supplement Push</div><div style="font-size:11px;color:var(--text3)">Feb 15 – Mar 15</div></td>
+                <td style="color:var(--text2)">11</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$38,900</td>
+                <td style="color:var(--text2)">$50K</td>
+                <td><div style="font-size:11px;color:var(--text3);margin-bottom:4px">78%</div><div class="progress-track" style="width:140px"><div class="progress-fill" style="width:78%"></div></div></td>
+                <td><span class="badge badge-amber">Ending soon</span></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Home Decor Q2</div><div style="font-size:11px;color:var(--text3)">Apr 1 – Apr 30</div></td>
+                <td style="color:var(--text2)">0</td>
+                <td style="color:var(--text3);font-family:var(--mono)">$0</td>
+                <td style="color:var(--text2)">$60K</td>
+                <td><div style="font-size:11px;color:var(--text3);margin-bottom:4px">0%</div><div class="progress-track" style="width:140px"><div class="progress-fill" style="width:0%"></div></div></td>
+                <td><span class="badge badge-blue">Upcoming</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CRM -->
+      <div class="page" id="page-crm">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Affiliate CRM</div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input class="search-input" style="height:32px;width:200px;font-size:12px" placeholder="Search affiliates...">
+              <button class="btn btn-green btn-sm">+ Add affiliate</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr>
+              <th>Creator</th><th>Followers</th><th>Niche</th><th>GMV</th><th>Commission</th><th>Videos</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(16,185,129,0.2);color:var(--green)">SN</div><div><div style="font-weight:500">@stylewithnadia</div><div style="font-size:11px;color:var(--text3)">1.2M followers</div></div></div></td>
+                <td style="color:var(--text2)">1.2M</td><td style="color:var(--text2)">Fashion</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$42,100</td>
+                <td style="color:var(--text2)">15%</td><td style="color:var(--text2)">18</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-sm" onclick="viewAffiliate('@stylewithnadia')">View ✦</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(96,165,250,0.2);color:var(--blue)">BL</div><div><div style="font-weight:500">@beautybylaura</div><div style="font-size:11px;color:var(--text3)">890K followers</div></div></div></td>
+                <td style="color:var(--text2)">890K</td><td style="color:var(--text2)">Beauty</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$38,500</td>
+                <td style="color:var(--text2)">12%</td><td style="color:var(--text2)">14</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-sm" onclick="viewAffiliate('@beautybylaura')">View ✦</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(251,191,36,0.2);color:var(--amber)">FJ</div><div><div style="font-weight:500">@fitnessjordan</div><div style="font-size:11px;color:var(--text3)">540K followers</div></div></div></td>
+                <td style="color:var(--text2)">540K</td><td style="color:var(--text2)">Health</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$21,200</td>
+                <td style="color:var(--text2)">10%</td><td style="color:var(--text2)">9</td>
+                <td><span class="badge badge-amber">Pending</span></td>
+                <td><button class="btn btn-sm" onclick="viewAffiliate('@fitnessjordan')">View ✦</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(248,113,113,0.15);color:var(--red)">GS</div><div><div style="font-weight:500">@glowwithsara</div><div style="font-size:11px;color:var(--text3)">210K followers</div></div></div></td>
+                <td style="color:var(--text2)">210K</td><td style="color:var(--text2)">Skincare</td>
+                <td style="color:var(--green);font-weight:600;font-family:var(--mono)">$14,800</td>
+                <td style="color:var(--text2)">12%</td><td style="color:var(--text2)">6</td>
+                <td><span class="badge badge-blue">New</span></td>
+                <td><button class="btn btn-sm" onclick="viewAffiliate('@glowwithsara')">View ✦</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="page" id="page-analytics">
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Earned Media Value</div>
+            <div class="metric-value">$80,809</div>
+            <div class="metric-change">↑ +381%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Sample Requests</div>
+            <div class="metric-value">2,879</div>
+            <div class="metric-change">↑ +430%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Avg Commission</div>
+            <div class="metric-value">12.4%</div>
+            <div class="metric-change">↑ +1.2%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Reply Rate</div>
+            <div class="metric-value">24%</div>
+            <div class="metric-change">↑ +6%</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">AI performance insights ✦</div>
+            <button class="btn btn-green btn-sm" onclick="getInsights()">Generate report ✦</button>
+          </div>
+          <div class="panel-body">
+            <div id="analytics-insights" style="color:var(--text2);font-size:13px;line-height:1.7">
+              Click "Generate report" to have AI analyze your campaign data and surface key insights.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT BRIEFS -->
+      <div class="page" id="page-briefs">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">AI content brief generator ✦</div>
+          </div>
+          <div class="panel-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
+              <div>
+                <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">Product name</label>
+                <input class="search-input" id="brief-product" placeholder="e.g. Glow Serum Pro" style="width:100%">
+              </div>
+              <div>
+                <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">Creator niche</label>
+                <input class="search-input" id="brief-niche" placeholder="e.g. beauty, skincare" style="width:100%">
+              </div>
+            </div>
+            <div style="margin-bottom:14px">
+              <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">Key talking points</label>
+              <textarea class="search-input" id="brief-points" style="width:100%;height:70px;resize:none;display:block" placeholder="e.g. natural ingredients, dermatologist tested, reduces wrinkles in 4 weeks..."></textarea>
+            </div>
+            <button class="btn btn-green" onclick="generateBrief()">Generate content brief ✦</button>
+            <div id="brief-output" style="margin-top:16px"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- AI CHAT PANEL -->
+<div class="ai-panel collapsed" id="ai-panel">
+  <div class="ai-header" onclick="toggleAI()">
+    <div class="ai-dot"></div>
+    <div class="ai-title">AI Assistant ✦</div>
+    <div class="ai-sub" id="ai-sub">Click to open</div>
+  </div>
+  <div class="ai-messages" id="ai-messages">
+    <div class="ai-msg bot">Hi! I'm your affiliate AI. Ask me anything — write outreach, analyze performance, find creators, or strategize campaigns.</div>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="ai-input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendAI()">
+    <button class="ai-send" onclick="sendAI()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="white"><path d="M1 7h12M8 2l5 5-5 5"/></svg>
+    </button>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const API_KEY_PLACEHOLDER = ''; // Set your Anthropic API key here OR use the built-in proxy
+
+// ─── NAVIGATION ───────────────────────────────────────────────────
+function nav(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = {
+    dashboard: 'Dashboard', creators: 'AI Creator Search',
+    automations: 'Outreach Automations', campaigns: 'Campaigns',
+    crm: 'Affiliate CRM', analytics: 'Analytics', briefs: 'Content Briefs'
+  };
+  document.getElementById('page-title').textContent = titles[name] || name;
+}
+
+// ─── AI CALL ──────────────────────────────────────────────────────
+async function callAI(prompt, systemPrompt = '') {
+  const sys = systemPrompt || 'You are an expert TikTok Shop affiliate marketing assistant. Be concise, specific, and action-oriented. Use plain text without markdown headers.';
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: sys,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  return data.content?.[0]?.text || 'Sorry, something went wrong.';
+}
+
+// ─── AI CHAT PANEL ────────────────────────────────────────────────
+let aiOpen = false;
+function toggleAI() {
+  aiOpen = !aiOpen;
+  const panel = document.getElementById('ai-panel');
+  panel.classList.toggle('collapsed', !aiOpen);
+  document.getElementById('ai-sub').textContent = aiOpen ? 'Online' : 'Click to open';
+  if (aiOpen) document.getElementById('ai-input').focus();
+}
+function openAI(msg) {
+  if (!aiOpen) toggleAI();
+  if (msg) {
+    document.getElementById('ai-input').value = msg;
+    sendAI();
+  }
+}
+async function sendAI() {
+  const input = document.getElementById('ai-input');
+  const msgs = document.getElementById('ai-messages');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  msgs.innerHTML += `<div class="ai-msg user">${escHtml(text)}</div>`;
+  msgs.innerHTML += `<div class="ai-msg loading" id="ai-loading">Thinking...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  const reply = await callAI(text);
+  document.getElementById('ai-loading')?.remove();
+  msgs.innerHTML += `<div class="ai-msg bot">${escHtml(reply)}</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ─── CREATOR SEARCH ───────────────────────────────────────────────
+async function aiCreatorSearch() {
+  const q = document.getElementById('creator-query').value;
+  const out = document.getElementById('creator-ai-response');
+  out.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:10px 0">✦ AI is analyzing creator profiles...</div>';
+  const reply = await callAI(
+    `Based on this search: "${q}" — give me 3 specific TikTok creator profile recommendations. For each include: handle, estimated followers, niche, why they're a good fit, and a suggested commission %. Keep it brief and actionable.`,
+    'You are a TikTok creator discovery expert. Be specific and practical. No markdown, just clean numbered text.'
+  );
+  out.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap">${escHtml(reply)}</div>`;
+}
+function setPill(el, val) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('creator-query').value = val;
+}
+function sendOutreach(handle) {
+  openAI(`Write a short, casual TikTok DM to ${handle} inviting them to be an affiliate for a beauty/fashion brand. Include a hook, the offer (15% commission + free products), and a call to action. Keep it under 100 words.`);
+}
+
+// ─── AUTOMATIONS ──────────────────────────────────────────────────
+async function composeMessage() {
+  const prompt = document.getElementById('compose-prompt').value;
+  const out = document.getElementById('composed-message');
+  if (!prompt.trim()) { out.innerHTML = '<div style="color:var(--red);font-size:12px">Please describe your brand first.</div>'; return; }
+  out.innerHTML = '<div style="color:var(--text3);font-size:13px">✦ Writing your message...</div>';
+  const reply = await callAI(
+    `Write a TikTok Shop affiliate outreach DM based on this brief: ${prompt}. Make it feel personal, casual, and genuine. Under 120 words.`,
+    'You are an expert at writing TikTok creator outreach messages that get replies. No markdown. Just the message.'
+  );
+  out.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px;font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap">${escHtml(reply)}</div>
+    <button class="btn btn-sm" style="margin-top:10px" onclick="copyText('${escAttr(reply)}')">Copy message</button>
+  `;
+}
+async function createAutomation() {
+  openAI('Help me design a new outreach automation sequence for TikTok affiliates. What steps should I include and what should each message say?');
+}
+
+// ─── CAMPAIGNS ────────────────────────────────────────────────────
+async function createCampaign() {
+  openAI('Help me plan a new TikTok Shop affiliate campaign. What information do I need and what should the strategy look like?');
+}
+
+// ─── CRM ──────────────────────────────────────────────────────────
+async function viewAffiliate(handle) {
+  openAI(`Give me a quick performance summary and 3 actionable suggestions for my affiliate ${handle}. What should I do to increase their GMV this month?`);
+}
+
+// ─── ANALYTICS ────────────────────────────────────────────────────
+async function getInsights() {
+  const out = document.getElementById('analytics-insights');
+  out.innerHTML = '<span style="color:var(--text3)">✦ Generating AI analysis...</span>';
+  const reply = await callAI(
+    'Analyze this affiliate program data and give me 5 specific insights and action items: GMV $284K (+139%), 86 active affiliates, 1247 DMs sent (+407%), 24% reply rate, 4.2x ROAS, top niches: fashion, beauty, health. What should I focus on next month?',
+    'You are a performance marketing analyst specializing in TikTok Shop. Be specific, data-driven, and actionable. No markdown headers, just numbered insights.'
+  );
+  out.textContent = reply;
+}
+
+// ─── CONTENT BRIEFS ───────────────────────────────────────────────
+async function generateBrief() {
+  const product = document.getElementById('brief-product').value;
+  const niche = document.getElementById('brief-niche').value;
+  const points = document.getElementById('brief-points').value;
+  const out = document.getElementById('brief-output');
+  if (!product) { out.innerHTML = '<div style="color:var(--red);font-size:12px">Please enter a product name.</div>'; return; }
+  out.innerHTML = '<div style="color:var(--text3);font-size:13px">✦ Generating brief...</div>';
+  const reply = await callAI(
+    `Create a TikTok creator content brief for: Product: ${product}, Niche: ${niche || 'general'}, Key points: ${points || 'none specified'}. Include: hook ideas, key messages, do's and don'ts, and suggested video format. Keep it concise.`,
+    'You are a TikTok content strategist. Create practical, creator-friendly briefs. No markdown, plain numbered/bulleted text.'
+  );
+  out.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-wrap">${escHtml(reply)}</div>`;
+}
+
+// ─── LIVE ACTIVITY FEED ───────────────────────────────────────────
+const activities = [
+  { icon: '📨', name: '@makeupbymia', action: 'DM sent', time: '2m ago', badge: 'badge-blue', label: 'Sent' },
+  { icon: '↩', name: '@glowwithsara', action: 'Replied to outreach', time: '8m ago', badge: 'badge-amber', label: 'Reply' },
+  { icon: '✓', name: '@stylewithnadia', action: 'Posted new video', time: '22m ago', badge: 'badge-green', label: 'Live' },
+  { icon: '💰', name: '@beautybylaura', action: 'Sale — $312', time: '41m ago', badge: 'badge-green', label: 'Sale' },
+  { icon: '🎁', name: '@fitnessjordan', action: 'Sample requested', time: '1h ago', badge: 'badge-amber', label: 'Sample' },
+];
+function renderFeed() {
+  const feed = document.getElementById('activity-feed');
+  if (!feed) return;
+  feed.innerHTML = activities.map(a => `
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+      <div style="width:28px;height:28px;border-radius:7px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">${a.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:500;color:var(--text)">${a.name}</div>
+        <div style="font-size:11px;color:var(--text3)">${a.action} · ${a.time}</div>
+      </div>
+      <span class="badge ${a.badge}" style="font-size:10px">${a.label}</span>
+    </div>
+  `).join('');
+  const last = fee

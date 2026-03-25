@@ -568,35 +568,87 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); heig
     <!-- OUTREACH PAGE -->
     <div class="page" id="page-outreach">
       <div class="outreach-stats">
-        <div class="outreach-stat">
-          <div class="bottom-label">DMs Sent Today</div>
-          <div class="bottom-value">847</div>
-          <div class="bottom-change up">↗ 24% reply rate</div>
+        <div class="outreach-stat"><div class="bottom-label">DMs Sent Today</div><div class="bottom-value">847</div><div class="bottom-change up">↗ 24% reply rate</div></div>
+        <div class="outreach-stat"><div class="bottom-label">Templates Active</div><div class="bottom-value" id="active-template-count">3</div></div>
+        <div class="outreach-stat"><div class="bottom-label">Pending Replies</div><div class="bottom-value">132</div><div class="bottom-change" style="color:var(--accent)">AI handling</div></div>
+        <div class="outreach-stat"><div class="bottom-label">Conversions Today</div><div class="bottom-value">18</div><div class="bottom-change up">↗ +12%</div></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-header">
+          <div class="panel-title">Outreach Templates <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:6px">Free · No AI cost</span></div>
+          <button class="search-btn" style="padding:6px 14px;font-size:12px" onclick="showNewTemplate()">+ New Template</button>
         </div>
-        <div class="outreach-stat">
-          <div class="bottom-label">Active Automations</div>
-          <div class="bottom-value">4</div>
-        </div>
-        <div class="outreach-stat">
-          <div class="bottom-label">Pending Replies</div>
-          <div class="bottom-value">132</div>
-          <div class="bottom-change" style="color:var(--accent)">AI handling</div>
-        </div>
-        <div class="outreach-stat">
-          <div class="bottom-label">Conversions Today</div>
-          <div class="bottom-value">18</div>
-          <div class="bottom-change up">↗ +12%</div>
+        <div id="templates-list" style="padding:0 16px"></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-header"><div class="panel-title">Send Outreach DM</div></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Creator handle</label>
+              <input class="ai-input" id="dm-handle" placeholder="@creatorname" style="height:36px">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Select template</label>
+              <select class="ai-input" id="dm-template-select" style="height:36px" onchange="previewTemplate()">
+                <option value="">Choose a template...</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Preview & edit</label>
+            <textarea class="ai-input" id="dm-preview" style="width:100%;height:100px;resize:none;display:block" placeholder="Select a template above to preview..."></textarea>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="search-btn" onclick="sendDM()">Send DM</button>
+            <button class="topbar-btn" onclick="aiEnhanceDM()" style="font-size:12px">✦ AI enhance</button>
+            <span style="font-size:11px;color:var(--text3)">AI only used when you click enhance</span>
+          </div>
+          <div id="dm-output" style="margin-top:10px"></div>
         </div>
       </div>
+
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">AI Message Composer</div>
-          <span class="badge badge-purple">Powered by Claude</span>
+          <div class="panel-title">AI Reply Handler <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:6px">AI only used when creator replies</span></div>
+          <span class="badge badge-green">Active</span>
         </div>
         <div class="panel-body">
-          <textarea class="ai-input" id="compose-brief" style="width:100%;height:80px;resize:none;display:block;margin-bottom:10px" placeholder="Describe your brand, product, and what you're offering (e.g. skincare brand, 15% commission, free samples for beauty creators 50k-500k followers)..."></textarea>
-          <button class="search-btn" onclick="composeOutreach()">Generate DM with AI ✦</button>
-          <div id="compose-output" style="margin-top:12px"></div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Paste a creator reply and AI writes the perfect response to convert them into an affiliate.</div>
+          <textarea class="ai-input" id="reply-input" style="width:100%;height:70px;resize:none;display:block;margin-bottom:10px" placeholder="Paste creator reply... e.g. Hey! Sounds interesting, what is the commission rate?"></textarea>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div>
+              <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Your brand/product</label>
+              <input class="ai-input" id="reply-brand" placeholder="e.g. Men Pens — luxury pens" style="height:36px">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Commission offer</label>
+              <input class="ai-input" id="reply-commission" placeholder="e.g. 15% + free products" style="height:36px">
+            </div>
+          </div>
+          <button class="search-btn" onclick="handleReply()">Generate reply with AI ✦</button>
+          <div id="reply-output" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div id="template-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center">
+        <div style="background:var(--white);border-radius:14px;padding:24px;width:500px;max-width:95vw;box-shadow:var(--shadow-md)">
+          <div style="font-size:15px;font-weight:600;margin-bottom:16px">New outreach template</div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Template name</label>
+            <input class="ai-input" id="tpl-name" placeholder="e.g. Beauty creators casual" style="height:36px;width:100%">
+          </div>
+          <div style="margin-bottom:8px">
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em">Message — use {name} {niche} {followers} as variables</label>
+            <textarea class="ai-input" id="tpl-body" style="width:100%;height:120px;resize:none;display:block" placeholder="Hey {name}! Love your {niche} content. I run a brand and would love to have you as an affiliate. 15% commission + free products. Interested?"></textarea>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Variables: {name} = creator name, {niche} = their niche, {followers} = follower count</div>
+          <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button class="topbar-btn" onclick="closeTemplateModal()">Cancel</button>
+            <button class="search-btn" onclick="saveTemplate()" style="padding:8px 20px">Save template</button>
+          </div>
         </div>
       </div>
     </div>
@@ -959,6 +1011,138 @@ document.querySelectorAll('.nav-item').forEach(item => {
     }
   });
 });
+
+
+// ── TEMPLATES ────────────────────────────────────────────────
+const DEFAULT_TEMPLATES = [
+  { id: 1, name: 'Casual intro — beauty/fashion', body: "Hey {name}! Love your {niche} content 🔥 I work with a brand looking for TikTok affiliates. We offer 15% commission + free products sent to you. Super easy to get started — just post naturally about what you already love. Interested in hearing more?" },
+  { id: 2, name: 'Direct offer', body: "Hi {name}! Quick question — would you be open to a paid affiliate collab? {followers} followers in {niche} is exactly who we look for. 15% on every sale + free products. No minimum posting requirement. Let me know!" },
+  { id: 3, name: 'Value-first approach', body: "Hey {name}! Your {niche} content is genuinely great. I represent a brand that I think would resonate perfectly with your audience. We do 15% affiliate commission with free products and full creative freedom. Would love to connect — worth a quick chat?" },
+];
+
+let templates = JSON.parse(localStorage.getItem('dlgnt_templates') || 'null') || DEFAULT_TEMPLATES;
+
+function saveTemplates() {
+  localStorage.setItem('dlgnt_templates', JSON.stringify(templates));
+  renderTemplates();
+  updateTemplateSelect();
+}
+
+function renderTemplates() {
+  const list = document.getElementById('templates-list');
+  const select = document.getElementById('dm-template-select');
+  if (!list) return;
+  if (templates.length === 0) {
+    list.innerHTML = '<div style="padding:16px;color:var(--text3);font-size:13px">No templates yet. Create one above.</div>';
+    return;
+  }
+  list.innerHTML = templates.map(t => `
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;margin-bottom:4px">${esc(t.name)}</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.body)}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="topbar-btn" style="font-size:11px;padding:4px 10px" onclick="useTemplate(${t.id})">Use</button>
+        <button class="topbar-btn" style="font-size:11px;padding:4px 10px;color:var(--red-text,#c00)" onclick="deleteTemplate(${t.id})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+  const last = list.lastChild;
+  if (last) last.style.borderBottom = 'none';
+  document.getElementById('active-template-count').textContent = templates.length;
+}
+
+function updateTemplateSelect() {
+  const select = document.getElementById('dm-template-select');
+  if (!select) return;
+  select.innerHTML = '<option value="">Choose a template...</option>' +
+    templates.map(t => `<option value="${t.id}">${esc(t.name)}</option>`).join('');
+}
+
+function previewTemplate() {
+  const id = parseInt(document.getElementById('dm-template-select').value);
+  const handle = document.getElementById('dm-handle').value || '@creator';
+  const t = templates.find(t => t.id === id);
+  if (!t) return;
+  const preview = t.body
+    .replace(/{name}/g, handle.replace('@',''))
+    .replace(/{niche}/g, 'beauty')
+    .replace(/{followers}/g, '100K');
+  document.getElementById('dm-preview').value = preview;
+}
+
+function useTemplate(id) {
+  document.getElementById('dm-template-select').value = id;
+  previewTemplate();
+  nav('outreach', null);
+  document.getElementById('dm-handle').focus();
+}
+
+function deleteTemplate(id) {
+  templates = templates.filter(t => t.id !== id);
+  saveTemplates();
+}
+
+function showNewTemplate() {
+  document.getElementById('template-modal').style.display = 'flex';
+}
+
+function closeTemplateModal() {
+  document.getElementById('template-modal').style.display = 'none';
+  document.getElementById('tpl-name').value = '';
+  document.getElementById('tpl-body').value = '';
+}
+
+function saveTemplate() {
+  const name = document.getElementById('tpl-name').value.trim();
+  const body = document.getElementById('tpl-body').value.trim();
+  if (!name || !body) { alert('Please fill in both fields.'); return; }
+  templates.push({ id: Date.now(), name, body });
+  saveTemplates();
+  closeTemplateModal();
+}
+
+function sendDM() {
+  const handle = document.getElementById('dm-handle').value.trim();
+  const msg = document.getElementById('dm-preview').value.trim();
+  const out = document.getElementById('dm-output');
+  if (!handle || !msg) { out.innerHTML = '<div style="color:#c00;font-size:13px">Please enter a creator handle and select a template.</div>'; return; }
+  out.innerHTML = `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 13px;font-size:13px;color:#166534">
+    ✓ DM ready for <strong>${esc(handle)}</strong> — copy and send via TikTok:<br><br>
+    <div style="background:white;border:1px solid #d1fae5;border-radius:6px;padding:10px;font-size:13px;line-height:1.6">${esc(msg)}</div>
+    <button onclick="navigator.clipboard.writeText('${msg.replace(/'/g,"\'")}');this.textContent='Copied!'" style="margin-top:8px;padding:5px 14px;border-radius:6px;border:1px solid #16a34a;background:transparent;color:#16a34a;font-size:12px;cursor:pointer">Copy message</button>
+  </div>`;
+}
+
+async function aiEnhanceDM() {
+  const msg = document.getElementById('dm-preview').value.trim();
+  const handle = document.getElementById('dm-handle').value || 'the creator';
+  if (!msg) { alert('Select a template first.'); return; }
+  const out = document.getElementById('dm-output');
+  out.innerHTML = '<div style="color:var(--text3);font-size:13px">✦ Enhancing message...</div>';
+  const reply = await callAI(`Make this TikTok outreach DM more personal and compelling for ${handle}. Keep it under 100 words, casual, no emojis overkill: "${msg}"`, 'You write TikTok outreach DMs. Return only the improved message, nothing else.');
+  document.getElementById('dm-preview').value = reply;
+  out.innerHTML = '<div style="color:#16a34a;font-size:12px">✓ Message enhanced with AI</div>';
+}
+
+async function handleReply() {
+  const reply = document.getElementById('reply-input').value.trim();
+  const brand = document.getElementById('reply-brand').value.trim() || 'our brand';
+  const commission = document.getElementById('reply-commission').value.trim() || '15% commission + free products';
+  const out = document.getElementById('reply-output');
+  if (!reply) { out.innerHTML = '<div style="color:#c00;font-size:13px">Please paste the creator reply first.</div>'; return; }
+  out.innerHTML = '<div style="color:var(--text3);font-size:13px">✦ Writing response...</div>';
+  const response = await callAI(
+    `A TikTok creator replied to my affiliate outreach: "${reply}". My brand: ${brand}. Offer: ${commission}. Write a short, friendly reply that answers their question and moves them toward joining. Under 80 words.`,
+    'You write TikTok affiliate reply messages. Return only the message, nothing else.'
+  );
+  out.innerHTML = `<div style="background:#f5f3ff;border:1px solid rgba(124,58,237,0.2);border-radius:8px;padding:12px;font-size:13px;line-height:1.6">${esc(response)}</div>
+    <button onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent);this.textContent='Copied!'" style="margin-top:8px;padding:5px 14px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;cursor:pointer;font-family:var(--font)">Copy reply</button>`;
+}
+
+// Initialize templates on load
+setTimeout(() => { renderTemplates(); updateTemplateSelect(); }, 200);
 
 async function signOut() {
   if (window._sb) await window._sb.auth.signOut();

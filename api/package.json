@@ -1,0 +1,8 @@
+{
+  "name": "dlgnt-ai",
+  "version": "1.0.0",
+  "description": "DLGNT.ai — TikTok Shop Affiliate Engine",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}

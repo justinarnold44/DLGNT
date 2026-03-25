@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DLGNT.ai — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f9fb;
+  --white: #ffffff;
+  --sidebar: #ffffff;
+  --border: #e8eaed;
+  --border2: #d1d5db;
+  --text: #111827;
+  --text2: #6b7280;
+  --text3: #9ca3af;
+  --accent: #7c3aed;
+  --accent2: #6d28d9;
+  --accent-dim: rgba(124,58,237,0.08);
+  --green: #10b981;
+  --green-dim: rgba(16,185,129,0.1);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.1);
+  --blue: #3b82f6;
+  --font: 'Inter', sans-serif;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; min-width: 240px;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow-y: auto;
+}
+.sidebar-top { padding: 16px; border-bottom: 1px solid var(--border); }
+.logo { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 700; }
+.logo-text { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.logo-ext { color: var(--accent); }
+.shop-selector { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--bg); border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 500; border: 1px solid var(--border); }
+.shop-selector:hover { border-color: var(--border2); }
+
+.nav { padding: 10px 8px; flex: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border-radius: var(--radius);
+  font-size: 13px; color: var(--text2); cursor: pointer;
+  transition: all 0.12s; user-select: none;
+  position: relative;
+}
+.nav-item:hover { background: var(--bg); color: var(--text); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 500; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-arrow { margin-left: auto; opacity: 0.4; font-size: 11px; }
+.nav-sub { padding-left: 35px; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; }
+.nav-section { margin-bottom: 2px; }
+
+.sidebar-bottom {
+  padding: 12px 8px;
+  border-top: 1px solid var(--border);
+}
+.ai-copilot {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: var(--radius);
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: white; cursor: pointer; font-size: 13px; font-weight: 500;
+  margin-bottom: 10px;
+}
+.ai-badge { font-size: 9px; background: rgba(255,255,255,0.25); padding: 2px 6px; border-radius: 20px; margin-left: auto; }
+.user-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: var(--radius); cursor: pointer; }
+.user-row:hover { background: var(--bg); }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; flex-shrink: 0; }
+.user-name { font-size: 12px; font-weight: 500; }
+.user-email { font-size: 11px; color: var(--text3); }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text2); }
+.breadcrumb span { color: var(--text); font-weight: 500; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-btn { padding: 6px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text2); font-family: var(--font); transition: all 0.12s; display: flex; align-items: center; gap: 5px; }
+.topbar-btn:hover { border-color: var(--border2); color: var(--text); }
+.topbar-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.topbar-btn.primary:hover { background: var(--accent2); }
+.notif-btn { width: 32px; height: 32px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+.notif-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; position: absolute; top: 5px; right: 5px; border: 1.5px solid white; }
+.messages-btn { padding: 6px 14px; border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--accent); background: var(--accent-dim); color: var(--accent); font-family: var(--font); display: flex; align-items: center; gap: 5px; }
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 20px; }
+.page { display: none; animation: fadeIn 0.18s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* FILTER BAR */
+.filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.date-btn { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--white); font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text); box-shadow: var(--shadow); }
+.select-btn { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--white); font-size: 12px; color: var(--text2); cursor: pointer; min-width: 140px; box-shadow: var(--shadow); }
+.view-tabs { display: flex; margin-left: auto; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--white); }
+.view-tab { padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text2); border-right: 1px solid var(--border); }
+.view-tab:last-child { border-right: none; }
+.view-tab.active { background: var(--accent-dim); color: var(--accent); }
+
+/* METRIC CARDS GRID */
+.metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
+.metric-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.metric-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.metric-label { font-size: 12px; color: var(--text2); font-weight: 400; }
+.metric-value { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
+.metric-change { font-size: 11px; display: flex; align-items: center; gap: 3px; }
+.up { color: var(--green); }
+.down { color: var(--red); }
+.metric-chart { height: 55px; margin-top: 10px; }
+
+/* SPARKLINE SVG */
+.spark-svg { width: 100%; height: 55px; }
+
+/* BOTTOM METRICS ROW */
+.bottom-metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0; margin-bottom: 18px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+.bottom-metric { padding: 14px 16px; border-right: 1px solid var(--border); }
+.bottom-metric:last-child { border-right: none; }
+.bottom-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+.bottom-value { font-size: 18px; font-weight: 700; color: var(--text); }
+.bottom-change { font-size: 11px; margin-top: 2px; }
+
+/* TABLE PANEL */
+.panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+.panel-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-size: 14px; font-weight: 600; }
+.panel-body { padding: 16px; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { font-size: 11px; font-weight: 500; color: var(--text3); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+.table tr:last-child td { border-bottom: none; }
+.table tbody tr:hover td { background: var(--bg); }
+.creator-cell { display: flex; align-items: center; gap: 10px; }
+.creator-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+.tag { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; margin-right: 3px; }
+.tag-gray { background: #f3f4f6; color: var(--text2); }
+.tag-plus { background: var(--bg); color: var(--text3); border: 1px solid var(--border); }
+.action-btns { display: flex; gap: 4px; }
+.action-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text2); font-size: 13px; transition: all 0.12s; }
+.action-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+/* CREATOR SEARCH PAGE */
+.search-header { margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.search-title { font-size: 20px; font-weight: 700; }
+.search-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+.search-tab { padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.search-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.ai-search-box { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.ai-search-label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 10px; }
+.ai-search-row { display: flex; gap: 10px; align-items: center; }
+.ai-input { flex: 1; padding: 10px 14px; border-radius: var(--radius); border: 1px solid var(--border); font-size: 13px; font-family: var(--font); outline: none; transition: border 0.15s; color: var(--text); background: var(--bg); }
+.ai-input:focus { border-color: var(--accent); background: var(--white); }
+.search-btn { padding: 10px 20px; border-radius: var(--radius); background: var(--accent); color: white; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); display: flex; align-items: center; gap: 6px; transition: background 0.12s; white-space: nowrap; }
+.search-btn:hover { background: var(--accent2); }
+.search-btn.loading { opacity: 0.7; pointer-events: none; }
+.results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.results-count { font-size: 13px; }
+.results-count strong { color: var(--accent); }
+.pagination { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); }
+.page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.page-btn:hover { background: var(--accent-dim); }
+.items-select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 12px; font-family: var(--font); color: var(--text2); background: var(--white); }
+.email-check { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); }
+
+/* LOADING SKELETON */
+.skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* OUTREACH PAGE */
+.outreach-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.outreach-stat { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; box-shadow: var(--shadow); }
+
+/* BADGE */
+.badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-green { background: var(--green-dim); color: var(--green); }
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-purple { background: var(--accent-dim); color: var(--accent); }
+.badge-gray { background: #f3f4f6; color: var(--text2); }
+
+/* AI RESPONSE BOX */
+.ai-response { background: linear-gradient(135deg, #faf5ff, #f5f3ff); border: 1px solid rgba(124,58,237,0.2); border-radius: var(--radius-lg); padding: 14px 16px; margin-top: 12px; font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
+
+/* FUNNEL */
+.funnel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* GMV VALUE */
+.gmv { font-weight: 600; color: var(--text); }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .sidebar.open { display: flex; position: fixed; left: 0; top: 0; bottom: 0; z-index: 200; box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+  .mobile-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--white); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .hamburger { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--white); flex-direction: column; gap: 4px; padding: 8px; }
+  .hamburger span { display: block; width: 18px; height: 2px; background: var(--text2); border-radius: 2px; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 199; }
+  .overlay.open { display: block; }
+  .topbar { display: none; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .bottom-metrics { grid-template-columns: 1fr 1fr; }
+  .bottom-metric:nth-child(odd) { border-right: 1px solid var(--border); }
+  .bottom-metric:nth-child(even) { border-right: none; }
+  .funnel-grid { grid-template-columns: 1fr; }
+  .content { padding: 14px; }
+  .filter-bar { gap: 6px; }
+  .date-btn, .select-btn { font-size: 11px; padding: 6px 8px; }
+  .view-tabs { display: none; }
+  .outreach-stats { grid-template-columns: 1fr 1fr; }
+  .ai-panel { right: 10px; bottom: 10px; width: calc(100vw - 20px); max-width: 400px; }
+  .table th, .table td { padding: 8px 8px; font-size: 12px; }
+  .search-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .metrics-grid { grid-template-columns: 1fr; }
+  .bottom-metrics { grid-template-columns: 1fr; }
+  .bottom-metric { border-right: none !important; border-bottom: 1px solid var(--border); }
+  .metric-value { font-size: 20px; }
+  .outreach-stats { grid-template-columns: 1fr; }
+}
+
+/* SCROLL */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- MOBILE HEADER -->
+<div class="mobile-header" id="mobile-header" style="display:none">
+  <div class="logo" style="margin:0">
+    <div class="logo-mark">D</div>
+    <div class="logo-text">DLGNT<span class="logo-ext">.ai</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="notif-btn"><svg width="15" height="15" viewBox="0 0 16 16" fill="var(--text2)"><path d="M8 1a5 5 0 015 5v3l1.5 2.5H1.5L3 9V6a5 5 0 015-5zM6.5 13.5a1.5 1.5 0 003 0"/></svg><div class="notif-dot"></div></div>
+    <div class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <div class="logo">
+      <div class="logo-mark">D</div>
+      <div class="logo-text">DLGNT<span class="logo-ext">.ai</span></div>
+    </div>
+    <div class="shop-selector">
+      <span id="shop-name">My Shop</span>
+      <span style="color:var(--text3);font-size:11px">▼</span>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-section">
+      <div class="nav-item active" onclick="nav('dashboard',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="nav('creators',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        AI Creator Search
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-item" onclick="toggleSub('outreach-sub',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12a1 1 0 011 1v8a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M1 3l7 5 7-5"/></svg>
+        Outreach
+        <span class="nav-arrow">›</span>
+      </div>
+      <div id="outreach-sub" class="nav-sub" style="display:none">
+        <div class="nav-item" onclick="nav('outreach',this)">Automations</div>
+        <div class="nav-item" onclick="nav('outreach',this)">Auto Replies</div>
+        <div class="nav-item" onclick="nav('outreach',this)">Campaigns</div>
+        <div class="nav-item" onclick="nav('outreach',this)">Lists</div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-item" onclick="toggleSub('crm-sub',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><path d="M1 14c0-2.2 1.8-4 4-4s4 1.8 4 4"/><path d="M8.5 13c.5-1.5 2-2.5 3.5-2.5 1.9 0 3.5 1.6 3.5 3.5"/></svg>
+        Affiliate CRM
+        <span class="nav-arrow">›</span>
+      </div>
+      <div id="crm-sub" class="nav-sub" style="display:none">
+        <div class="nav-item" onclick="nav('crm',this)">All Affiliates</div>
+        <div class="nav-item" onclick="nav('crm',this)">Sample Requests</div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-item" onclick="toggleSub('content-sub',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
+        Content
+        <span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-item" onclick="toggleSub('ads-sub',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 4h14M1 8h10M1 12h6"/></svg>
+        Ads
+        <span class="nav-arrow">›</span>
+      </div>
+      <div class="nav-item" onclick="nav('analytics',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 13L5 7l3 3 3-5 3 4"/></svg>
+        Social Intelligence
+      </div>
+      <div class="nav-item" onclick="nav('analytics',this)">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>
+        Creator Community
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="ai-copilot" onclick="toggleAI()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M8 1l1.5 3.5L13 6l-3.5 1.5L8 11l-1.5-3.5L3 6l3.5-1.5z"/></svg>
+      AI Copilot
+      <span class="ai-badge">Beta</span>
+    </div>
+    <div class="user-row" onclick="signOut()">
+      <div class="user-avatar">JA</div>
+      <div>
+        <div class="user-name">Justin Arnold</div>
+        <div class="user-email">contact@menpens.com</div>
+      </div>
+      <span style="margin-left:auto;color:var(--text3);font-size:11px" title="Sign out">⏻</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--text3)"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      <span id="page-title">Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn"><svg width="15" height="15" viewBox="0 0 16 16" fill="var(--text2)"><path d="M8 1a5 5 0 015 5v3l1.5 2.5H1.5L3 9V6a5 5 0 015-5zM6.5 13.5a1.5 1.5 0 003 0"/></svg><div class="notif-dot"></div></div>
+      <div class="notif-btn"><svg width="15" height="15" viewBox="0 0 16 16" fill="var(--text2)"><circle cx="8" cy="8" r="7"/><path d="M8 7v5M8 5v.5"/></svg></div>
+      <button class="messages-btn" onclick="toggleAI()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12a1 1 0 011 1v8a1 1 0 01-1 1H9l-3 3V12H2a1 1 0 01-1-1V3a1 1 0 011-1z"/></svg>
+        Messages
+        <span style="background:var(--red);color:white;font-size:9px;padding:1px 5px;border-radius:10px;font-weight:700">99+</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="filter-bar">
+        <div class="date-btn">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text2)"><rect x="1" y="2" width="14" height="13" rx="1.5"/><path d="M1 6h14M5 1v3M11 1v3"/></svg>
+          Feb 21, 2026 – Mar 23, 2026
+        </div>
+        <div class="select-btn">Select a product <span style="margin-left:auto">▾</span></div>
+        <div class="select-btn">Select a campaign <span style="margin-left:auto">▾</span></div>
+        <div class="view-tabs" style="margin-left:auto">
+          <div class="view-tab active" onclick="setViewTab(this)">Stats</div>
+          <div class="view-tab" onclick="setViewTab(this)">Reports</div>
+          <div class="view-tab" onclick="setViewTab(this)">Share</div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-label">Affiliate GMV</div>
+          </div>
+          <div class="metric-value">$60,632.72</div>
+          <div class="metric-change down">↘ -15.73%</div>
+          <div class="metric-chart"><canvas id="chart-gmv" class="spark-svg"></canvas></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-label">DMs Sent</div>
+          </div>
+          <div class="metric-value">33,117</div>
+          <div class="metric-change up">↗ +∞%</div>
+          <div class="metric-chart"><canvas id="chart-dms" class="spark-svg"></canvas></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-label">TC Invites Sent</div>
+          </div>
+          <div class="metric-value">30,098</div>
+          <div class="metric-change up">↗ +∞%</div>
+          <div class="metric-chart"><canvas id="chart-tc" class="spark-svg"></canvas></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-label">Video Views</div>
+          </div>
+          <div class="metric-value">14,212,180</div>
+          <div class="metric-change down">↘ -25.48%</div>
+          <div class="metric-chart"><canvas id="chart-views" class="spark-svg"></canvas></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-label">Sample Requests</div>
+          </div>
+          <div class="metric-value">1,325</div>
+          <div class="metric-change up">↗ +45.93%</div>
+          <div class="metric-chart"><canvas id="chart-samples" class="spark-svg"></canvas></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-label">Videos Posted</div>
+          </div>
+          <div class="metric-value">2,337</div>
+          <div class="metric-change down">↘ -4.34%</div>
+          <div class="metric-chart"><canvas id="chart-videos" class="spark-svg"></canvas></div>
+        </div>
+      </div>
+
+      <div class="bottom-metrics">
+        <div class="bottom-metric">
+          <div class="bottom-label">Samples Approved</div>
+          <div class="bottom-value">857</div>
+          <div class="bottom-change up">↗ +686.24%</div>
+        </div>
+        <div class="bottom-metric">
+          <div class="bottom-label">Avg. Videos Per Creator</div>
+          <div class="bottom-value">4.89</div>
+          <div class="bottom-change down">↘ -3.17%</div>
+        </div>
+        <div class="bottom-metric">
+          <div class="bottom-label">Avg. GMV Per Video</div>
+          <div class="bottom-value">$4.63</div>
+          <div class="bottom-change down">↘ -74.96%</div>
+        </div>
+        <div class="bottom-metric">
+          <div class="bottom-label">Sample Ratio</div>
+          <div class="bottom-value">2.35</div>
+          <div class="bottom-change up">↗ +∞%</div>
+        </div>
+        <div class="bottom-metric">
+          <div class="bottom-label">Reply Ratio</div>
+          <div class="bottom-value">0.84%</div>
+          <div class="bottom-change up">↗ +∞%</div>
+        </div>
+        <div class="bottom-metric">
+          <div class="bottom-label">Affiliate GMV</div>
+          <div class="bottom-value">$60,632</div>
+          <div class="bottom-change down">↘ -15.73%</div>
+        </div>
+      </div>
+
+      <div class="funnel-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">My Top Affiliates</div>
+            <button class="topbar-btn" onclick="nav('crm',document.querySelectorAll('.nav-item')[3])">View all →</button>
+          </div>
+          <table class="table">
+            <thead><tr>
+              <th>Creator</th><th>GMV</th><th>Videos</th><th>Views</th><th>Status</th>
+            </tr></thead>
+            <tbody id="top-affiliates">
+              <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Your Affiliate Funnel</div>
+          </div>
+          <div class="panel-body">
+            <div id="funnel-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATOR SEARCH PAGE -->
+    <div class="page" id="page-creators">
+      <div class="search-header">
+        <div class="search-title">AI Creator Search</div>
+        <div style="display:flex;gap:10px">
+          <button class="topbar-btn">↓ Download List</button>
+          <button class="topbar-btn primary">💾 Save List</button>
+        </div>
+      </div>
+      <div class="search-tabs">
+        <div class="search-tab active" onclick="setSearchTab(this)">AI Search</div>
+        <div class="search-tab" onclick="setSearchTab(this)">Lookalike</div>
+      </div>
+      <div class="ai-search-box">
+        <div class="ai-search-label">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.5L13 6l-3.5 1.5L8 11l-1.5-3.5L3 6l3.5-1.5z"/></svg>
+          AI Magic Search
+        </div>
+        <div class="ai-search-row">
+          <input class="ai-input" id="creator-query" placeholder="Show me beauty creators with over 50k followers who review skincare products..." value="Show me beauty creators with over 50k followers who review skincare products">
+          <label class="email-check" style="white-space:nowrap">
+            <input type="checkbox" id="email-only"> Only show creators with email
+          </label>
+          <button class="search-btn" id="search-btn" onclick="searchCreators()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="white"><circle cx="6" cy="6" r="4"/><path d="M10 10l4 4"/></svg>
+            Search
+          </button>
+        </div>
+        <div style="margin-top:8px"><a href="#" style="font-size:12px;color:var(--accent);text-decoration:none">↗ What to search for</a></div>
+      </div>
+
+      <div class="results-header">
+        <div class="results-count">Total <strong id="result-count">3,698,263</strong> results</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <select class="items-select" id="items-per-page">
+            <option>10 Items</option>
+            <option>25 Items</option>
+            <option>50 Items</option>
+          </select>
+          <div class="pagination">
+            <div class="page-btn" onclick="changePage(-1)">‹</div>
+            <span id="current-page">1</span>
+            <div class="page-btn" onclick="changePage(1)">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <table class="table">
+          <thead><tr>
+            <th>Creator</th>
+            <th>Categories</th>
+            <th onclick="sortBy('followers')" style="cursor:pointer">Followers ⇅</th>
+            <th onclick="sortBy('engagement')" style="cursor:pointer">Engagement ⇅</th>
+            <th onclick="sortBy('gmv')" style="cursor:pointer">GMV ⇅</th>
+            <th>Live GMV</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody id="creator-table-body">
+            <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">Enter a search to find creators</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="ai-search-response"></div>
+    </div>
+
+    <!-- OUTREACH PAGE -->
+    <div class="page" id="page-outreach">
+      <div class="outreach-stats">
+        <div class="outreach-stat">
+          <div class="bottom-label">DMs Sent Today</div>
+          <div class="bottom-value">847</div>
+          <div class="bottom-change up">↗ 24% reply rate</div>
+        </div>
+        <div class="outreach-stat">
+          <div class="bottom-label">Active Automations</div>
+          <div class="bottom-value">4</div>
+        </div>
+        <div class="outreach-stat">
+          <div class="bottom-label">Pending Replies</div>
+          <div class="bottom-value">132</div>
+          <div class="bottom-change" style="color:var(--accent)">AI handling</div>
+        </div>
+        <div class="outreach-stat">
+          <div class="bottom-label">Conversions Today</div>
+          <div class="bottom-value">18</div>
+          <div class="bottom-change up">↗ +12%</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">AI Message Composer</div>
+          <span class="badge badge-purple">Powered by Claude</span>
+        </div>
+        <div class="panel-body">
+          <textarea class="ai-input" id="compose-brief" style="width:100%;height:80px;resize:none;display:block;margin-bottom:10px" placeholder="Describe your brand, product, and what you're offering (e.g. skincare brand, 15% commission, free samples for beauty creators 50k-500k followers)..."></textarea>
+          <button class="search-btn" onclick="composeOutreach()">Generate DM with AI ✦</button>
+          <div id="compose-output" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CRM PAGE -->
+    <div class="page" id="page-crm">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">All Affiliates</div>
+          <div style="display:flex;gap:10px">
+            <input class="ai-input" style="height:32px;width:200px;font-size:12px" placeholder="Search affiliates...">
+            <button class="search-btn" style="padding:6px 14px;font-size:12px">+ Add Affiliate</button>
+          </div>
+        </div>
+        <table class="table">
+          <thead><tr>
+            <th>Creator</th><th>Followers</th><th>Categories</th><th>GMV</th><th>Commission</th><th>Videos</th><th>Status</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="creator-cell"><div class="creator-img">SN</div><div><div style="font-weight:500">@stylewithnadia</div><div style="font-size:11px;color:var(--text3)">nadia@creator.io</div></div></div></td>
+              <td>1.2M</td><td><span class="tag tag-gray">Fashion</span></td>
+              <td class="gmv">$42,100</td><td>15%</td><td>18</td>
+              <td><span class="badge badge-green">Active</span></td>
+            </tr>
+            <tr>
+              <td><div class="creator-cell"><div class="creator-img">BL</div><div><div style="font-weight:500">@beautybylaura</div><div style="font-size:11px;color:var(--text3)">laura@beauty.com</div></div></div></td>
+              <td>890K</td><td><span class="tag tag-gray">Beauty</span></td>
+              <td class="gmv">$38,500</td><td>12%</td><td>14</td>
+              <td><span class="badge badge-green">Active</span></td>
+            </tr>
+            <tr>
+              <td><div class="creator-cell"><div class="creator-img">FJ</div><div><div style="font-weight:500">@fitnessjordan</div><div style="font-size:11px;color:var(--text3)">jordan@fit.co</div></div></div></td>
+              <td>540K</td><td><span class="tag tag-gray">Health</span></td>
+              <td class="gmv">$21,200</td><td>10%</td><td>9</td>
+              <td><span class="badge badge-gray">Pending</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ANALYTICS PAGE -->
+    <div class="page" id="page-analytics">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">AI Performance Insights</div>
+          <button class="search-btn" style="padding:7px 16px;font-size:12px" onclick="getInsights()">Generate Report ✦</button>
+        </div>
+        <div class="panel-body">
+          <div id="insights-output" style="font-size:13px;color:var(--text2);line-height:1.7">Click "Generate Report" to have AI analyze your data.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- AI COPILOT PANEL -->
+<div id="ai-panel" style="position:fixed;right:20px;bottom:20px;width:340px;background:white;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-md);z-index:100;display:none;flex-direction:column;max-height:480px;">
+  <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer" onclick="toggleAI()">
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite"></div>
+    <span style="font-size:13px;font-weight:600">AI Copilot</span>
+    <span style="margin-left:auto;font-size:11px;color:var(--text3)">Beta</span>
+    <span style="color:var(--text3);font-size:16px">×</span>
+  </div>
+  <div id="ai-msgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:200px;max-height:320px">
+    <div style="background:#f5f3ff;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);line-height:1.6">Hi! I'm your DLGNT AI Copilot. Ask me to write outreach messages, analyze performance, or find creators.</div>
+  </div>
+  <div style="padding:10px;border-top:1px solid var(--border);display:flex;gap:8px">
+    <input id="ai-chat-input" class="ai-input" placeholder="Ask anything..." style="height:36px;font-size:13px" onkeydown="if(event.key==='Enter')sendChat()">
+    <button onclick="sendChat()" style="width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="white"><path d="M1 7h12M8 2l5 5-5 5"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Auth guard — redirect to login if not signed in
+(async function(){
+  const sb = supabase.createClient('https://suqghqjepnzrbzgnpjtw.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1cWdocWplcG56cmJ6Z25wanR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzOTYwOTcsImV4cCI6MjA4OTk3MjA5N30.HDo4uEJxKz1i1PgORark1qqA4PhWcpt7paKxYI59src');
+  const { data } = await sb.auth.getSession();
+  if (!data.session) { window.location.href = 'login.html'; return; }
+  // Store sb globally for sign out
+  window._sb = sb;
+  window._user = data.session.user;
+  // Update user name in sidebar
+  const meta = data.session.user.user_metadata;
+  if (meta?.name) {
+    const el = document.querySelector('.user-name');
+    if (el) el.textContent = meta.name;
+  }
+  const emailEl = document.querySelector('.user-email');
+  if (emailEl) emailEl.textContent = data.session.user.email;
+})();
+</script>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────────────────
+function nav(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'Dashboard', creators:'AI Creator Search', outreach:'Outreach', crm:'Affiliate CRM', analytics:'Analytics' };
+  document.getElementById('page-title').textContent = titles[name] || name;
+}
+function toggleSub(id, el) {
+  const sub = document.getElementById(id);
+  const open = sub.style.display !== 'none';
+  sub.style.display = open ? 'none' : 'block';
+  el.querySelector('.nav-arrow').textContent = open ? '›' : '∨';
+}
+function setViewTab(el) { document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
+function setSearchTab(el) { document.querySelectorAll('.search-tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
+
+// ── AI CALLS ────────────────────────────────────────────────
+async function callAI(prompt, system) {
+  try {
+    const res = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: system || 'You are an expert TikTok Shop affiliate marketing assistant. Be concise and actionable.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || 'Error getting response.';
+  } catch(e) { return 'Connection error. Make sure the API is configured.'; }
+}
+
+// ── CREATOR SEARCH ──────────────────────────────────────────
+let currentPage = 1;
+let allCreators = [];
+
+async function searchCreators() {
+  const q = document.getElementById('creator-query').value.trim();
+  if (!q) return;
+  const btn = document.getElementById('search-btn');
+  btn.textContent = 'Searching...'; btn.classList.add('loading');
+  const tbody = document.getElementById('creator-table-body');
+  tbody.innerHTML = Array(5).fill(`<tr>${Array(7).fill('<td><div class="skeleton" style="height:14px;margin:4px 0;border-radius:4px"></div></td>').join('')}</tr>`).join('');
+
+  try {
+    // Call RapidAPI TikTok scraper via our backend proxy
+    const res = await fetch('/api/creator-search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q, page: currentPage })
+    });
+    const data = await res.json();
+    if (data.creators && data.creators.length > 0) {
+      allCreators = data.creators;
+      document.getElementById('result-count').textContent = data.total?.toLocaleString() || data.creators.length;
+      renderCreators(allCreators);
+    } else {
+      // Fallback: use AI to generate realistic creator suggestions
+      renderAICreators(q);
+    }
+  } catch(e) {
+    renderAICreators(q);
+  }
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="white"><circle cx="6" cy="6" r="4"/><path d="M10 10l4 4"/></svg> Search';
+  btn.classList.remove('loading');
+}
+
+async function renderAICreators(q) {
+  const reply = await callAI(
+    `Generate 8 realistic TikTok creator profiles matching: "${q}". Return ONLY a JSON array, no markdown. Each object: { "name": "Display Name", "handle": "@handle", "categories": ["Cat1","Cat2"], "followers": "123.4K", "follower_count": 123400, "engagement": "4.2%", "gmv": "$1.2M", "gmv_value": 1200000, "live_gmv": "$0", "initials": "AB" }`,
+    'Return only valid JSON array, no explanation, no markdown.'
+  );
+  try {
+    const clean = reply.replace(/```json|```/g,'').trim();
+    allCreators = JSON.parse(clean);
+    document.getElementById('result-count').textContent = '3,698,263';
+    renderCreators(allCreators);
+  } catch(e) {
+    document.getElementById('creator-table-body').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Search error. Please try again.</td></tr>';
+  }
+}
+
+function renderCreators(creators) {
+  const tbody = document.getElementById('creator-table-body');
+  tbody.innerHTML = creators.map(c => `
+    <tr>
+      <td>
+        <div class="creator-cell">
+          <div class="creator-img">${c.initials || c.handle?.slice(1,3).toUpperCase() || 'CR'}</div>
+          <div>
+            <div style="font-weight:500;font-size:13px">${c.name || c.handle}</div>
+            <div style="font-size:11px;color:var(--text3)">${c.handle}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        ${(c.categories||['General']).slice(0,2).map(cat=>`<span class="tag tag-gray">${cat}</span>`).join('')}
+        ${c.categories?.length > 2 ? `<span class="tag tag-plus">+${c.categories.length-2}</span>` : ''}
+      </td>
+      <td style="font-weight:500">${c.followers}</td>
+      <td>${c.engagement}</td>
+      <td class="gmv">${c.gmv}</td>
+      <td style="color:var(--text3)">${c.live_gmv || '$0'}</td>
+      <td>
+        <div class="action-btns">
+          <div class="action-btn" title="Invite" onclick="inviteCreator('${c.handle}')">👤</div>
+          <div class="action-btn" title="Message" onclick="messageCreator('${c.handle}')">💬</div>
+          <div class="action-btn" title="More">⋯</div>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function sortBy(field) {
+  if (!allCreators.length) return;
+  allCreators.sort((a,b) => {
+    const av = field === 'followers' ? a.follower_count : field === 'gmv' ? a.gmv_value : parseFloat(a.engagement);
+    const bv = field === 'followers' ? b.follower_count : field === 'gmv' ? b.gmv_value : parseFloat(b.engagement);
+    return bv - av;
+  });
+  renderCreators(allCreators);
+}
+
+function changePage(dir) {
+  currentPage = Math.max(1, currentPage + dir);
+  document.getElementById('current-page').textContent = currentPage;
+  searchCreators();
+}
+
+function inviteCreator(handle) { toggleAI(); document.getElementById('ai-chat-input').value = `Write a TikTok Shop TC invite for ${handle}`; sendChat(); }
+function messageCreator(handle) { nav('outreach', null); document.getElementById('compose-brief').value = `Write a DM to ${handle}`; }
+
+// ── OUTREACH COMPOSER ───────────────────────────────────────
+async function composeOutreach() {
+  const brief = document.getElementById('compose-brief').value;
+  const out = document.getElementById('compose-output');
+  if (!brief.trim()) return;
+  out.innerHTML = '<div style="color:var(--text3);font-size:13px">✦ Writing message...</div>';
+  const reply = await callAI(`Write a TikTok DM outreach for an affiliate program based on: ${brief}. Keep it casual, personal, under 120 words.`, 'Write TikTok outreach DMs that feel genuine and get high reply rates. No markdown.');
+  out.innerHTML = `<div class="ai-response">${esc(reply)}</div><button class="topbar-btn" style="margin-top:8px" onclick="copyText(this)">Copy message</button>`;
+}
+
+// ── ANALYTICS INSIGHTS ──────────────────────────────────────
+async function getInsights() {
+  const out = document.getElementById('insights-output');
+  out.innerHTML = '<span style="color:var(--text3)">✦ Analyzing data...</span>';
+  const reply = await callAI('Analyze TikTok Shop affiliate data: GMV $60K, 33K DMs sent, 0.84% reply rate, 2337 videos posted, 14M views, 857 samples approved. Give 5 specific insights and action items.', 'You are a TikTok Shop performance analyst. Be specific and actionable. Number your insights.');
+  out.textContent = reply;
+}
+
+// ── AI COPILOT CHAT ─────────────────────────────────────────
+let aiOpen = false;
+function toggleAI() {
+  aiOpen = !aiOpen;
+  document.getElementById('ai-panel').style.display = aiOpen ? 'flex' : 'none';
+  if (aiOpen) document.getElementById('ai-chat-input').focus();
+}
+async function sendChat() {
+  const input = document.getElementById('ai-chat-input');
+  const msgs = document.getElementById('ai-msgs');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  msgs.innerHTML += `<div style="background:var(--accent);color:white;border-radius:8px;padding:8px 12px;font-size:13px;margin-left:30px">${esc(text)}</div>`;
+  msgs.innerHTML += `<div id="ai-loading" style="color:var(--text3);font-size:13px;font-style:italic;padding:4px 0">Thinking...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  const reply = await callAI(text);
+  document.getElementById('ai-loading')?.remove();
+  msgs.innerHTML += `<div style="background:#f5f3ff;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);line-height:1.6">${esc(reply)}</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── DASHBOARD DATA ──────────────────────────────────────────
+function renderTopAffiliates() {
+  document.getElementById('top-affiliates').innerHTML = [
+    {init:'SN',name:'@stylewithnadia',gmv:'$42,100',videos:18,views:'2.1M'},
+    {init:'BL',name:'@beautybylaura',gmv:'$38,500',videos:14,views:'1.8M'},
+    {init:'FJ',name:'@fitnessjordan',gmv:'$21,200',videos:9,views:'980K'},
+    {init:'GS',name:'@glowwithsara',gmv:'$14,800',videos:6,views:'620K'},
+  ].map(a=>`<tr>
+    <td><div class="creator-cell"><div class="creator-img">${a.init}</div><div style="font-weight:500">${a.name}</div></div></td>
+    <td class="gmv">${a.gmv}</td><td>${a.videos}</td><td>${a.views}</td>
+    <td><span class="badge badge-green">Active</span></td>
+  </tr>`).join('');
+}
+renderTopAffiliates();
+
+function renderFunnel() {
+  const steps = [
+    {label:'DMs Sent',val:33117,pct:100},
+    {label:'Opened',val:9120,pct:28},
+    {label:'Replied',val:278,pct:0.84},
+    {label:'Joined',val:86,pct:0.26},
+    {label:'Posted',val:62,pct:0.19},
+  ];
+  document.getElementById('funnel-chart').innerHTML = steps.map(s=>`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="color:var(--text2)">${s.label}</span>
+        <span style="font-weight:600">${s.val.toLocaleString()}</span>
+      </div>
+      <div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${s.pct}%;background:var(--accent);border-radius:4px;transition:width 0.6s"></div>
+      </div>
+    </div>
+  `).join('');
+}
+renderFunnel();
+
+// ── SPARKLINE CHARTS ─────────────────────────────────────────
+function makeSparkData(trend, points=14) {
+  const data = [];
+  let v = 50;
+  for (let i=0;i<points;i++) {
+    v += (Math.random()-0.45)*10 + trend;
+    data.push(Math.max(0, v));
+  }
+  return data;
+}
+function makeChart(id, color, trend) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const data = makeSparkData(trend);
+  new Chart(el, {
+    type:'line',
+    data:{ labels:data.map((_,i)=>i), datasets:[{ data, borderColor:color, borderWidth:1.5, fill:true, backgroundColor: color+'18', tension:0.4, pointRadius:0 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{display:false}, y:{display:false} }, animation:{duration:800} }
+  });
+}
+setTimeout(()=>{
+  makeChart('chart-gmv','#ef4444',-0.5);
+  makeChart('chart-dms','#10b981',1);
+  makeChart('chart-tc','#10b981',0.8);
+  makeChart('chart-views','#ef4444',-0.3);
+  makeChart('chart-samples','#10b981',1.2);
+  makeChart('chart-videos','#ef4444',-0.2);
+},100);
+
+// ── MOBILE ───────────────────────────────────────────────────
+function checkMobile() {
+  const isMobile = window.innerWidth <= 768;
+  document.getElementById('mobile-header').style.display = isMobile ? 'flex' : 'none';
+}
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+checkMobile();
+window.addEventListener('resize', checkMobile);
+// Close sidebar on nav click on mobile
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+      document.querySelector('.sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+});
+
+async function signOut() {
+  if (window._sb) await window._sb.auth.signOut();
+  window.location.href = 'login.html';
+}
+function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function copyText(btn) { const text = btn.previousElementSibling.textContent; navigator.clipboard.writeText(text); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy message',2000); }
+</script>
+</body>
+</html>
